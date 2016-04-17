@@ -77,6 +77,15 @@
   (resource)--; \
   TASK_STATE
 
+/* TASK_WAIT_RESOURCE_TIMEOUT: wait for the resource unless a certain timeout
+          is reached */
+#define TASK_WAIT_RESOURCE_TIMEOUT(resource, timeout, handler) \
+  TASK_STATE \
+  TASK_TIMEOUT(timeout, handler) \
+  if (!resource) return TASK_EXIT_WAITING; \
+  (resource)--; \
+  TASK_STATE
+
 /* TASK_FREE_RESOURCE: free the resource previously gotten and define
         a new state*/
 #define TASK_FREE_RESOURCE(resource) \
@@ -101,6 +110,12 @@
         This should be used at the beginning of a state. */
 #define TASK_TIMEOUT(timeout, handler) \
   if (TIME_COUNTER-time_init>timeout) goto handler;
+
+/* TASK_RETURN_TIMEOUT: prepare the task to be re-initialized and return
+        the corresponding error code */
+#define TASK_RETURN_TIMEOUT \
+  restartable_stage = 0; \
+  return TASK_EXIT_TIMEOUT;
 
 /* TASK_END: defines the end of the task. Anything below this sentences will
         be reached normally (unless a label is used). */

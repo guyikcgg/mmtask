@@ -142,7 +142,7 @@ int task2_1 () {
   TASK_BEGIN;
   // STATE_0:
 
-  TASK_WAIT_RESOURCE(resource_1);
+  TASK_WAIT_RESOURCE_TIMEOUT(resource_1, 20, HANDLE_TIMEOUT);
   // STATE_1:
 
   printf("resource got by task2_1, %d\n", resource_1);
@@ -156,6 +156,10 @@ int task2_1 () {
   printf("resource back (task2_1), %d\n", resource_1);
 
   TASK_END;
+
+  HANDLE_TIMEOUT:
+  printf("Timeout occurred in task2_1!\n");
+  TASK_RETURN_TIMEOUT;
 }
 
 /* task1_2: print a simple message */

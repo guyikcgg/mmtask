@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "../mmtask.h"
 
+/* Prototypes of the used tasks */
 int task1();
 int task2();
 int task1_1();
@@ -8,12 +9,14 @@ int task1_2();
 int task2_1();
 int task2_2();
 
+/* TIME_COUNTER definition (normally, it would be a rtc register or function) */
 long unsigned int iterative_counter = 100;
-
 #define TIME_COUNTER iterative_counter
 
+/* main: execute task1 and task2 concurrently (in parallel) */
 int main(int argc, char **argv) {
   char a[10] = {0};
+
   while(1) {
     iterative_counter += 10;
     task1();
@@ -25,6 +28,7 @@ int main(int argc, char **argv) {
 
 int resource_1 = 1;
 
+/* task1: execute task1_1 until it is done, then, execute task1_2 */
 int task1() {
   int task1_1_status;
 
@@ -39,6 +43,7 @@ int task1() {
   TASK_END;
 }
 
+/* task2: execute task2_1 and task2_2 in parallel */
 int task2() {
   TASK_BEGIN;
 
@@ -50,6 +55,8 @@ int task2() {
   TASK_END;
 }
 
+/* task1_1: get the defined resource, repeat an action three times and
+            get the resource back */
 int task1_1() {
   static int i;
 
@@ -73,10 +80,13 @@ int task1_1() {
   TASK_END;
 }
 
+/* task1_2: print a simple message */
 int task1_2() {
   printf("task1_2, %d\n", resource_1);
 }
 
+/* task2_1: get the defined resource, make sure a certain time has passed, then
+            get the resource back */
 int task2_1 () {
   TASK_BEGIN;
 
@@ -92,6 +102,7 @@ int task2_1 () {
   TASK_END;
 }
 
+/* task1_2: print a simple message */
 int task2_2() {
   printf("task2_2, %d\n", resource_1);
 }

@@ -23,12 +23,13 @@
 *******************************************************************************/
 
 
-// Exit statuses
+// Exit states
 #define TASK_EXIT_DONE       0
 #define TASK_EXIT_RUNNING   -1
 #define TASK_EXIT_TIMEOUT   -2
 #define TASK_EXIT_WAITING   -3
 
+// A helper macro
 #define M_HELPER(token)  __##token##__+1
 #define M M_HELPER(COUNTER)
 
@@ -36,43 +37,74 @@
 //Include this line in your code (where counter should be a real-time counter)
 //#define TIME_COUNTER counter
 
+/* SET_RESOURCE: defines a specified quantity of a limited resource.
+        Must be used in the global scope. */
 #define SET_RESOURCE(resource_name, quantity) unsigned resource_name = quantity;
 
+/* INCLUDE_RESOURCE: includes a resource defined in other file.
+        Must be used in the global scope or in headers files. */
+#define INCLUDE_RESOURCE(resource_name) extern unsigned resource_name;
+
+/* TASK_STATE: separates the current state from the next one,
+        without yielding to other tasks. */
 #define TASK_STATE \
-  elapsed_time = TIME_COUNTER; \
-  restartable_stage = M; case M-1:
-
-#define TASK_BEGIN \
-  static long unsigned elapsed_time; \
-  static int restartable_stage = 0; \
-  switch(restartable_stage) { case 0: \
-  TASK_STATE
-
-#define TASK_YIELD \
-  restartable_stage = M; return TASK_EXIT_RUNNING; \
-  elapsed_time = TIME_COUNTER; \
+  time_init = TIME_COUNTER; \
+  restartable_stage = M; \
   case M-1:
 
+/* TASK_BEGIN: defines the beginning of the task, going into the initial state.
+        Must be the first macro of the task, just after variable declarations.*/
+#define TASK_BEGIN \
+  static long unsigned time_init; \
+  static int restartable_stage = 0; \
+  switch(restartable_stage) { \
+  case 0: \
+  TASK_STATE
+
+/* TASK_YIELD: stop running this task to yield to other tasks. This defines
+        a new state after the current one. */
+#define TASK_YIELD \
+  restartable_stage = M; \
+  return TASK_EXIT_RUNNING; \
+  time_init = TIME_COUNTER; \
+  case M-1:
+
+/* TASK_WAIT_RESOURCE: get the resource (if available) and define a new
+        state. If the resource is not available, do nothing (wait for it) */
 #define TASK_WAIT_RESOURCE(resource) \
-  restartable_stage = M; case M-1: \
+  TASK_STATE \
   if (!resource) return TASK_EXIT_WAITING; \
   (resource)--; \
   TASK_STATE
 
+/* TASK_FREE_RESOURCE: free the resource previously gotten and define
+        a new state*/
 #define TASK_FREE_RESOURCE(resource) \
   (resource)++; \
   TASK_STATE
 
-#define TASK_YIELD_MINVT(ms) \
-  restartable_stage = M; case M-1: \
-  if (TIME_COUNTER-elapsed_time<ms) { return TASK_EXIT_RUNNING; } \
+/* TASK_YIELD_MINVT: yield to other tasks but don't go to the next state until
+        a minimum visit time (minvt) has elapsed since the current state
+        was reached */
+#define TASK_YIELD_MINVT(minvt) \
+  restartable_stage = M; \
+  case M-1: \
+  if (TIME_COUNTER-time_init<minvt) return TASK_EXIT_RUNNING; \
   TASK_STATE
 
+/* TASK_REPEAT_WHILE: repeat the current state while the condition is true.
+        After that, enter a new state. */
 #define TASK_REPEAT_WHILE(condition) \
   if (!(condition)) TASK_YIELD
 
+/* TASK_TIMEOUT: define what to do if a state has used too much time.
+        This should be used at the beginning of a state. */
 #define TASK_TIMEOUT(timeout, handler) \
-  if (TIME_COUNTER-elapsed_time>timeout) goto handler;
+  if (TIME_COUNTER-time_init>timeout) goto handler;
 
+/* TASK_END: defines the end of the task. Anything below this sentences will
+        be reached normally (unless a label is used). */
 #define TASK_END \
-  } restartable_stage = 0; return TASK_EXIT_DONE;
+  } \
+  restartable_stage = 0; \
+  return TASK_EXIT_DONE;

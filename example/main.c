@@ -106,9 +106,9 @@ int task1_1() {
   TASK_STATE;
   //STATE_2:
 
-  printf("i=%d\n", i++);
+  TASK_TIMEOUT(50, HANDLE_TIMEOUT);
 
-  TASK_TIMEOUT(50, GO_AHEAD);
+  printf("i=%d\n", i++);
 
   TASK_REPEAT_WHILE(i<10);
   // STATE_3:
@@ -125,6 +125,10 @@ int task1_1() {
   printf("Ending task1_1\n");
 
   TASK_END;
+
+  HANDLE_TIMEOUT:
+  printf("Timeout occurred in task1_1!\n");
+  goto GO_AHEAD;
 }
 
 /* task1_2: print a simple message */

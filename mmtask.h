@@ -21,6 +21,8 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
+
 // Exit statuses
 #define TASK_EXIT_DONE       0
 #define TASK_EXIT_RUNNING   -1
@@ -58,7 +60,7 @@
   restartable_stage = M; case M-1:
 
 #define TASK_YIELD_MINVT(ms) \
-  restartable_stage = M; case M-1: printf("%d-%d=%d",TIME_COUNTER,elapsed_time,TIME_COUNTER-elapsed_time);\
+  restartable_stage = M; case M-1: \
   if (TIME_COUNTER-elapsed_time<ms) { return TASK_EXIT_RUNNING; } \
   elapsed_time = TIME_COUNTER; \
   restartable_stage = M; case M-1:

@@ -32,8 +32,11 @@
 #define M_HELPER(token)  __##token##__+1
 #define M M_HELPER(COUNTER)
 
+
 //Include this line in your code (where counter should be a real-time counter)
 //#define TIME_COUNTER counter
+
+#define SET_RESOURCE(resource_name, quantity) unsigned resource_name = quantity;
 
 #define TASK_BEGIN \
   static long unsigned elapsed_time; \
@@ -49,13 +52,13 @@
 
 #define TASK_WAIT_RESOURCE(resource) \
   restartable_stage = M; case M-1: \
-  if (!*resource) return TASK_EXIT_WAITING; \
-  (*resource)--; \
+  if (!resource) return TASK_EXIT_WAITING; \
+  (resource)--; \
   elapsed_time = TIME_COUNTER; \
   restartable_stage = M; case M-1:
 
 #define TASK_FREE_RESOURCE(resource) \
-  (*resource)++; \
+  (resource)++; \
   elapsed_time = TIME_COUNTER; \
   restartable_stage = M; case M-1:
 

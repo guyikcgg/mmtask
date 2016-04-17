@@ -46,6 +46,9 @@ int task2_2();
 long unsigned int iterative_counter = 100;
 #define TIME_COUNTER iterative_counter
 
+// Define every resource here
+SET_RESOURCE(resource_1, 1);
+
 /* main: execute task1 and task2 concurrently (in parallel) */
 int main(int argc, char **argv) {
   char a[10] = {0};
@@ -58,8 +61,6 @@ int main(int argc, char **argv) {
     printf("%s\n", a);
   }
 }
-
-int resource_1 = 1;
 
 /* task1: execute task1_1 until it is done, then, execute task1_2 */
 int task1() {
@@ -96,14 +97,14 @@ int task1_1() {
   TASK_BEGIN;
   i = 0;
 
-  TASK_WAIT_RESOURCE(&resource_1);
+  TASK_WAIT_RESOURCE(resource_1);
   printf("resource got by task1_1, %d\n", resource_1);
 
   printf("i=%d\n", i++);
 
   TASK_REPEAT_WHILE(i<3);
 
-  TASK_FREE_RESOURCE(&resource_1);
+  TASK_FREE_RESOURCE(resource_1);
   printf("resource back (task1_1), %d\n", resource_1);
 
   TASK_YIELD;
@@ -123,13 +124,13 @@ int task1_2() {
 int task2_1 () {
   TASK_BEGIN;
 
-  TASK_WAIT_RESOURCE(&resource_1);
+  TASK_WAIT_RESOURCE(resource_1);
   printf("resource got by task2_1, %d\n", resource_1);
 
   TASK_YIELD_MINVT(40);
   //TASK_YIELD;
 
-  TASK_FREE_RESOURCE(&resource_1);
+  TASK_FREE_RESOURCE(resource_1);
   printf("resource back (task2_1), %d\n", resource_1);
 
   TASK_END;

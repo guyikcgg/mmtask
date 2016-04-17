@@ -73,5 +73,8 @@
   elapsed_time = TIME_COUNTER; \
   case M-1:
 
+#define TASK_TIMEOUT(timeout, handler) \
+  if (TIME_COUNTER-elapsed_time>timeout) goto handler;
+
 #define TASK_END \
   } restartable_stage = 0; return TASK_EXIT_DONE;

@@ -95,19 +95,27 @@ int task1_1() {
   static int i;
 
   TASK_BEGIN;
+  // STATE_0:
   i = 0;
 
   TASK_WAIT_RESOURCE(resource_1);
+  // STATE_1:
   printf("resource got by task1_1, %d\n", resource_1);
 
   printf("i=%d\n", i++);
 
-  TASK_REPEAT_WHILE(i<3);
+  TASK_TIMEOUT(50, GO_AHEAD);
 
+  TASK_REPEAT_WHILE(i<50);
+  // STATE_2:
+
+  GO_AHEAD:
   TASK_FREE_RESOURCE(resource_1);
+  // STATE_3:
   printf("resource back (task1_1), %d\n", resource_1);
 
   TASK_YIELD;
+  // STATE_4:
 
   printf("Ending task1_1\n");
 
@@ -123,14 +131,17 @@ int task1_2() {
             get the resource back */
 int task2_1 () {
   TASK_BEGIN;
+  // STATE_0:
 
   TASK_WAIT_RESOURCE(resource_1);
+  // STATE_1:
   printf("resource got by task2_1, %d\n", resource_1);
 
   TASK_YIELD_MINVT(40);
-  //TASK_YIELD;
+  // STATE_2:
 
   TASK_FREE_RESOURCE(resource_1);
+  // STATE_3:
   printf("resource back (task2_1), %d\n", resource_1);
 
   TASK_END;

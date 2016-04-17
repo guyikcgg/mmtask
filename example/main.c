@@ -20,6 +20,15 @@
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
+********************************************************************************
+* DESCRIPTION
+*
+* This example demonstrates the use of mmtask with a very simple program.
+* It has been used to check the functionalities of the provided library.
+*
+* The example has been designed to work on a GNU/Linux machine, but it should
+* also work on other OS or in a naked microcontroller.
+*
 *******************************************************************************/
 
 #include <stdio.h>

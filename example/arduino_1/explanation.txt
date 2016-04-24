@@ -1,0 +1,5 @@
+In this example, the system is doing various activies simultaneously: 
+
+- It switches on and off a LED,
+- reads an analogic port and sends the result through the serial port and 
+- waits for a message from the serial port and gives back

@@ -109,7 +109,7 @@
 /* TASK_TIMEOUT: define what to do if a state has used too much time.
         This should be used at the beginning of a state. */
 #define TASK_TIMEOUT(timeout, handler) \
-  if (TIME_COUNTER-time_init>timeout) goto handler;
+  if (TIME_COUNTER-time_init>=timeout) goto handler;
 
 /* TASK_RETURN_TIMEOUT: prepare the task to be re-initialized and return
         the corresponding error code */

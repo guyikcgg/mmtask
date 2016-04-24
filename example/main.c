@@ -43,7 +43,7 @@ int task2_1();
 int task2_2();
 
 /* TIME_COUNTER definition (normally, it would be a rtc register or function) */
-long unsigned int iterative_counter = 100;
+long unsigned int iterative_counter = 0;
 #define TIME_COUNTER iterative_counter
 
 // Define every resource here
@@ -51,14 +51,17 @@ SET_RESOURCE(resource_1, 1);
 
 /* main: execute task1 and task2 concurrently (in parallel) */
 int main(int argc, char **argv) {
-  char a[10] = {0};
-
+  char a;
   while(1) {
-    iterative_counter += 10;
+    iterative_counter += 1;
+
+    printf("\n\n ---- iterative_counter = %lu ---- \n\n", iterative_counter);
+
     task1();
     task2();
-    *a = getchar();
-    printf("%s\n", a);
+
+    // PAUSE
+    a = getchar();
   }
 }
 
@@ -67,10 +70,12 @@ int task1() {
   int task1_1_status;
 
   TASK_BEGIN;
+  STATE_0:
 
   task1_1_status = task1_1();
 
   TASK_REPEAT_WHILE(task1_1_status != TASK_EXIT_DONE);
+  STATE_1:
 
   task1_2();
 
@@ -80,9 +85,12 @@ int task1() {
 /* task2: execute task2_1 and task2_2 in parallel */
 int task2() {
   TASK_BEGIN;
+  STATE_0:
 
   task2_1();
-  TASK_YIELD;
+
+  TASK_STATE;
+  STATE_1:
 
   task2_2();
 
@@ -94,75 +102,95 @@ int task2() {
 int task1_1() {
   static int i;
 
+  printf("\nExecuting task1_1.\n");
+
   TASK_BEGIN;
-  // STATE_0:
+  STATE_0:
+
   i = 0;
-
   TASK_WAIT_RESOURCE(resource_1);
-  // STATE_1:
 
-  printf("resource got by task1_1, %d\n", resource_1);
+  STATE_1:
+
+  printf("  STATE_1:  \n");
+  printf("    -> 1x 'resource_1' taken ('resource_1' remaining: %d)\n", resource_1);
 
   TASK_STATE;
-  //STATE_2:
+  STATE_2:
+  printf("  STATE_2:  \n");
 
-  TASK_TIMEOUT(50, HANDLE_TIMEOUT);
+  TASK_TIMEOUT(5, HANDLE_TIMEOUT);
 
-  printf("i=%d\n", i++);
+  i += 1;
+  printf("    -> i=%d\n", i);
 
   TASK_REPEAT_WHILE(i<10);
-  // STATE_3:
+  STATE_3:
+  printf("  STATE_3:  \n");
 
-  GO_AHEAD:
   TASK_FREE_RESOURCE(resource_1);
-  // STATE_4:
 
-  printf("resource back (task1_1), %d\n", resource_1);
+  STATE_4:
+  printf("  STATE_4:  \n");
+
+  printf("    -> 1x 'resource_1' released ('resource_1' remaining: %d)\n", resource_1);
 
   TASK_YIELD;
-  // STATE_5:
+  STATE_5:
+  printf("  STATE_5:  \n");
 
-  printf("Ending task1_1\n");
+  printf("    -> Ending task1_1\n");
 
   TASK_END;
 
   HANDLE_TIMEOUT:
-  printf("Timeout occurred in task1_1!\n");
-  goto GO_AHEAD;
+  printf("  HANDLE_TIMEOUT:  \n");
+
+  printf("    -> Timeout occurred in task1_1!\n");
+
+  goto STATE_3;
 }
 
 /* task1_2: print a simple message */
 int task1_2() {
-  printf("task1_2, %d\n", resource_1);
+  printf("\nExecuting task1_2.\n");
 }
 
 /* task2_1: get the defined resource, make sure a certain time has passed, then
             get the resource back */
 int task2_1 () {
+
+  printf("\nExecuting task2_1.\n");
+
   TASK_BEGIN;
-  // STATE_0:
+  STATE_0:
+  printf("  STATE_0:  \n");
 
-  TASK_WAIT_RESOURCE_TIMEOUT(resource_1, 20, HANDLE_TIMEOUT);
-  // STATE_1:
+  TASK_WAIT_RESOURCE_TIMEOUT(resource_1, 2, HANDLE_TIMEOUT);
+  STATE_1:
+  printf("  STATE_1:  \n");
 
-  printf("resource got by task2_1, %d\n", resource_1);
+  printf("    -> 1x 'resource_1' taken ('resource_1' remaining: %d)\n", resource_1);
 
-  TASK_YIELD_MINVT(40);
-  // STATE_2:
+  TASK_YIELD_MINVT(4);
+  STATE_2:
+  printf("  STATE_2:  \n");
 
   TASK_FREE_RESOURCE(resource_1);
-  // STATE_3:
+  STATE_3:
+  printf("  STATE_3:  \n");
 
-  printf("resource back (task2_1), %d\n", resource_1);
+  printf("    -> 1x 'resource_1' released ('resource_1' remaining: %d)\n", resource_1);
 
   TASK_END;
 
   HANDLE_TIMEOUT:
-  printf("Timeout occurred in task2_1!\n");
+  printf("  HANDLE_TIMEOUT:  \n");
+  printf("    -> Timeout occurred in task2_1!\n");
   TASK_RETURN_TIMEOUT;
 }
 
 /* task1_2: print a simple message */
 int task2_2() {
-  printf("task2_2, %d\n", resource_1);
+  printf("\nExecuting task2_2.\n");
 }

@@ -6,7 +6,7 @@ HEADERS=mmtask.h
 
 all: example
 
-example: $(HEADERS) example/main.c
+example: $(HEADERS) example/linux.c
 	$(CC) -o "example/example" $^
 
 clean:

@@ -47,12 +47,13 @@ int task2_2();
 long unsigned int iterative_counter = 0;
 #define TIME_COUNTER iterative_counter
 
-// Define every resource here
-SET_RESOURCE(resource_1, 2);
+/* Definition of the resources */
+SET_RESOURCE(resource_1, 1);
 
 /* main: execute task1 and task2 concurrently (in parallel) */
 int main(int argc, char **argv) {
   char a;
+
   while(1) {
     iterative_counter += 1;
 

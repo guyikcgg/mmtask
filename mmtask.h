@@ -120,6 +120,6 @@
 /* TASK_END: defines the end of the task. Anything below this sentences will
         be reached normally (unless a label is used). */
 #define TASK_END \
-  } \
+  ;} \
   restartable_stage = 0; \
   return TASK_EXIT_DONE;

@@ -69,27 +69,27 @@
   time_init = TIME_COUNTER; \
   case M-1:
 
-/* TASK_WAIT_RESOURCE: get the resource (if available) and define a new
+/* TASK_WAIT_RESOURCE: get n resources (if available) and define a new
         state. If the resource is not available, do nothing (wait for it) */
-#define TASK_WAIT_RESOURCE(resource) \
+#define TASK_WAIT_RESOURCE(resource, n) \
   TASK_STATE \
-  if (!resource) return TASK_EXIT_WAITING; \
+  if (!(resource>=n)) return TASK_EXIT_WAITING; \
   (resource)--; \
   TASK_STATE
 
-/* TASK_WAIT_RESOURCE_TIMEOUT: wait for the resource unless a certain timeout
-          is reached */
-#define TASK_WAIT_RESOURCE_TIMEOUT(resource, timeout, handler) \
+/* TASK_WAIT_RESOURCE_TIMEOUT: wait for n resources to be available,
+          unless a certain timeout is reached */
+#define TASK_WAIT_RESOURCE_TIMEOUT(resource, n, timeout, handler) \
   TASK_STATE \
   TASK_TIMEOUT(timeout, handler) \
-  if (!resource) return TASK_EXIT_WAITING; \
+  if (!(resource>=n)) return TASK_EXIT_WAITING; \
   (resource)--; \
   TASK_STATE
 
 /* TASK_FREE_RESOURCE: free the resource previously gotten and define
         a new state*/
-#define TASK_FREE_RESOURCE(resource) \
-  (resource)++; \
+#define TASK_FREE_RESOURCE(resource, n) \
+  (resource) += n; \
   TASK_STATE
 
 /* TASK_YIELD_MINVT: yield to other tasks but don't go to the next state until

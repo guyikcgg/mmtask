@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include "../mmtask.h"
 
+
 /* Prototypes of the used tasks */
 int task1();
 int task2();
@@ -47,7 +48,7 @@ long unsigned int iterative_counter = 0;
 #define TIME_COUNTER iterative_counter
 
 // Define every resource here
-SET_RESOURCE(resource_1, 1);
+SET_RESOURCE(resource_1, 2);
 
 /* main: execute task1 and task2 concurrently (in parallel) */
 int main(int argc, char **argv) {
@@ -108,7 +109,7 @@ int task1_1() {
   STATE_0:
 
   i = 0;
-  TASK_WAIT_RESOURCE(resource_1);
+  TASK_WAIT_RESOURCE(resource_1, 1);
 
   STATE_1:
 
@@ -128,7 +129,7 @@ int task1_1() {
   STATE_3:
   printf("  STATE_3:  \n");
 
-  TASK_FREE_RESOURCE(resource_1);
+  TASK_FREE_RESOURCE(resource_1, 1);
 
   STATE_4:
   printf("  STATE_4:  \n");
@@ -166,7 +167,7 @@ int task2_1 () {
   STATE_0:
   printf("  STATE_0:  \n");
 
-  TASK_WAIT_RESOURCE_TIMEOUT(resource_1, 2, HANDLE_TIMEOUT);
+  TASK_WAIT_RESOURCE_TIMEOUT(resource_1, 1, 2, HANDLE_TIMEOUT);
   STATE_1:
   printf("  STATE_1:  \n");
 
@@ -176,7 +177,7 @@ int task2_1 () {
   STATE_2:
   printf("  STATE_2:  \n");
 
-  TASK_FREE_RESOURCE(resource_1);
+  TASK_FREE_RESOURCE(resource_1, 1);
   STATE_3:
   printf("  STATE_3:  \n");
 

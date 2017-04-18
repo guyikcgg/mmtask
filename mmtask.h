@@ -50,7 +50,8 @@
 #define TASK_STATE \
   time_init = TIME_COUNTER; \
   restartable_stage = M; \
-  case M-1:
+  case M-1: \
+  do {} while(0);
 
 /* TASK_BEGIN: defines the beginning of the task, going into the initial state.
         Must be the first macro of the task, just after variable declarations.*/
@@ -67,7 +68,8 @@
   restartable_stage = M; \
   return TASK_EXIT_RUNNING; \
   time_init = TIME_COUNTER; \
-  case M-1:
+  case M-1: \
+  do {} while(0);
 
 /* TASK_WAIT_RESOURCE: get n resources (if available) and define a new
         state. If the resource is not available, do nothing (wait for it) */
@@ -120,6 +122,6 @@
 /* TASK_END: defines the end of the task. Anything below this sentences will
         be reached normally (unless a label is used). */
 #define TASK_END \
-  ;} \
+  do {} while(0);} \
   restartable_stage = 0; \
   return TASK_EXIT_DONE;

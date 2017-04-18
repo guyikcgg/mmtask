@@ -32,7 +32,7 @@
 *******************************************************************************/
 
 #include <stdio.h>
-#include "../mmtask.h"
+#include <mmtask.h>
 
 
 /* Prototypes of the used tasks */

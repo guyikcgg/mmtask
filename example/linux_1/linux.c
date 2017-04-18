@@ -53,6 +53,17 @@ SET_RESOURCE(resource_1, 1);
 /* main: execute task1 and task2 concurrently (in parallel) */
 int main(int argc, char **argv) {
   char a;
+  const char instructions[] = \
+  "================================\n"
+  "=        mmtask example        =\n"
+  "================================\n"
+  "\n"
+  "Tasks will execute concurrently.\n"
+  "The program will pause on every \n"
+  "loop iteration.\n"
+  "Press enter to continue...\n";
+
+  printf("%s", instructions);
 
   while(1) {
     iterative_counter += 1;

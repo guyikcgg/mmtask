@@ -34,8 +34,18 @@
 #define M M_HELPER(COUNTER)
 
 
-//Include this line in your code (where counter should be a real-time counter)
+//Include this line in your code (where `counter` should be a real timer, either
+//a variable or a function)
 //#define TIME_COUNTER counter
+
+#ifndef TIME_COUNTER
+#warning "mmtask: TIME_COUNTER is not defined. It should point to a real timer!"
+unsigned mmtask_default_counter() {
+    static unsigned counter = 0;
+    return ++counter;
+}
+#define TIME_COUNTER mmtask_default_counter()
+#endif
 
 /* SET_RESOURCE: defines a specified quantity of a limited resource.
         Must be used in the global scope. */

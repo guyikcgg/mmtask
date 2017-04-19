@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
 int task1() {
   int task1_1_status;
 
-  TASK_BEGIN;
+  TASK_INIT;
   STATE_0:
 
   task1_1_status = task1_1();
@@ -97,7 +97,7 @@ int task1() {
 
 /* task2: execute task2_1 and task2_2 in parallel */
 int task2() {
-  TASK_BEGIN;
+  TASK_INIT;
   STATE_0:
 
   task2_1();
@@ -117,7 +117,7 @@ int task1_1() {
 
   printf("\nExecuting task1_1.\n");
 
-  TASK_BEGIN;
+  TASK_INIT;
   STATE_0:
 
   i = 0;
@@ -175,7 +175,7 @@ int task2_1 () {
 
   printf("\nExecuting task2_1.\n");
 
-  TASK_BEGIN;
+  TASK_INIT;
   STATE_0:
   printf("  STATE_0:  \n");
 

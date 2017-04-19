@@ -53,9 +53,9 @@
   case M-1: \
   do {} while(0);
 
-/* TASK_BEGIN: defines the beginning of the task, going into the initial state.
-        Must be the first macro of the task, just after variable declarations.*/
-#define TASK_BEGIN \
+/* TASK_INIT: Initializes the task, going into its initial state.
+        Must be the first macro of the task, just after declaration of local variables.*/
+#define TASK_INIT \
   static long unsigned time_init; \
   static int restartable_stage = 0; \
   switch(restartable_stage) { \
